@@ -510,6 +510,6 @@ Generated artifacts are `metrics_summary.csv`, `degradation_recovery.csv`, and `
 3. L. Ruff et al. “Deep One-Class Classification.” *International Conference on Machine Learning (ICML)*, 2018.
 4. L. Ruff et al. “Rethinking Assumptions in Deep Anomaly Detection.” arXiv:2006.00339, 2020.
 5. A. Siffer, P.-A. Fouque, A. Termier, and C. Largouët. “Anomaly Detection in Streams with Extreme Value Theory.” *ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD)*, 2017.
-6. W.-S. Hwang, J.-H. Yun, J. Kim, and B.-G. Min. “Time-Series Aware Precision and Recall for Anomaly Detection: Considering Variety of Detection Result and Addressing Ambiguous Labeling.” *ACM International Conference on Information and Knowledge Management (CIKM)*, 2019.
+6. W.-S. Hwang, J.-H. Yun, J. Kim, and H. C. Kim. “Time-Series Aware Precision and Recall for Anomaly Detection: Considering Variety of Detection Result and Addressing Ambiguous Labeling.” *ACM International Conference on Information and Knowledge Management (CIKM)*, 2019.
 7. W.-S. Hwang, J.-H. Yun, J. Kim, and B.-G. Min. “Do You Know Existing Accuracy Metrics Overrate Time-Series Anomaly Detections?” *37th ACM/SIGAPP Symposium on Applied Computing (SAC)*, 2022. Introduces eTaPR; DOI: 10.1145/3477314.3507024.
 8. S. Kim, K. Choi, H.-S. Choi, B. Lee, and S. Yoon. “Towards a Rigorous Evaluation of Time-Series Anomaly Detection.” *AAAI Conference on Artificial Intelligence*, 2022.
