@@ -6,7 +6,7 @@ Hongbin Zhang and Zeren Wang — Project Group 88, SSY340 Deep Machine Learning
 
 ## Abstract
 
-This study evaluates zero-day anomaly detection on the HAI dataset. Its 59-tag public intersection is filtered using source-only variance to 41 nonconstant modeling sensors. The corpus contains 1,608,008 real telemetry rows and 102 documented attack events, including 52 in the held-out 23.05 domain. Models are trained only on normal 21.03 data and evaluated over three seeds (11, 23, 37). VAE achieved the highest mean 23.05 PR-AUC (0.232 ± 0.002). Frozen and adaptive PR-AUC are identical because both arms threshold the same continuous scores. For VAE, frozen event recall moved from 0.560 on 21.03 to 0.154 on 23.05; DSPOT changed cross-domain recall to 0.115 (gain -0.038; recovery ROM -0.095) and false alarms from 16.41 to 5.47 per day. DSPOT is interpreted strictly as decision-layer adaptation: it changes thresholds, not the learned representation.
+This study evaluates zero-day anomaly detection on the HAI dataset. Its 59-tag public intersection is filtered using source-only variance to 41 nonconstant modeling sensors. The corpus contains 1,608,008 real telemetry rows and 102 documented attack events, including 52 in the held-out 23.05 domain. Models are trained only on normal 21.03 data and evaluated over three seeds (11, 23, 37). VAE achieved the highest mean 23.05 PR-AUC (0.232 ± 0.000). Frozen and adaptive PR-AUC are identical because both arms threshold the same continuous scores. For VAE, frozen event recall moved from 0.560 on 21.03 to 0.154 on 23.05; DSPOT changed cross-domain recall to 0.115 (gain -0.038; recovery ROM -0.095) and false alarms from 16.41 to 5.47 per day. DSPOT is interpreted strictly as decision-layer adaptation: it changes thresholds, not the learned representation.
 
 ## Research Questions
 
@@ -38,9 +38,9 @@ Each score is aligned to the causal end of a 60-second window; evaluation window
 
 | Model | Seeds | Parameters | Epochs | Training seconds (mean ± SD) |
 | --- | --- | --- | --- | --- |
-| PCA | 11, 23, 37 | n/a | n/a | 1.32 ± 0.08 |
-| DeepSVDD | 11, 23, 37 | 13904 | 40 | 18.84 ± 1.23 |
-| VAE | 11, 23, 37 | 26352 | 40 | 45.35 ± 1.76 |
+| PCA | 11, 23, 37 | n/a | n/a | 0.88 ± 0.01 |
+| DeepSVDD | 11, 23, 37 | 13904 | 40 | 14.79 ± 0.35 |
+| VAE | 11, 23, 37 | 26352 | 40 | 30.30 ± 0.66 |
 
 Parameter counts are read from each run's training metadata and show the actual SVDD/VAE capacity difference; PCA does not have a comparable neural parameter count. Training times are descriptive measurements, not controlled speed benchmarks.
 
@@ -56,18 +56,18 @@ Both EVT arms are calibrated exclusively on normal 21.03 scores to an empirical 
 | PCA | 23 | Adaptive DSPOT | 9.48091e-05 | 8.792 | 10.000 | 18.004 |
 | PCA | 37 | Frozen SPOT | 0.000184447 | 9.671 | 10.000 | 14.602 |
 | PCA | 37 | Adaptive DSPOT | 9.48091e-05 | 8.792 | 10.000 | 18.0021 |
-| DeepSVDD | 11 | Frozen SPOT | 0.00115741 | 10.551 | 10.000 | 1.42578 |
-| DeepSVDD | 11 | Adaptive DSPOT | 0.00135811 | 8.792 | 10.000 | 1.38867 |
-| DeepSVDD | 23 | Frozen SPOT | 0.00115741 | 7.913 | 10.000 | 1.44257 |
-| DeepSVDD | 23 | Adaptive DSPOT | 0.00135811 | 7.913 | 10.000 | 1.27142 |
-| DeepSVDD | 37 | Frozen SPOT | 0.00115741 | 14.947 | 10.000 | 1.97261 |
-| DeepSVDD | 37 | Adaptive DSPOT | 0.00115741 | 11.430 | 10.000 | 1.29119 |
-| VAE | 11 | Frozen SPOT | 4.87336e-05 | 10.551 | 10.000 | 37.3626 |
-| VAE | 11 | Adaptive DSPOT | 9.48091e-05 | 10.551 | 10.000 | 27.2134 |
-| VAE | 23 | Frozen SPOT | 4.87336e-05 | 10.551 | 10.000 | 35.6255 |
-| VAE | 23 | Adaptive DSPOT | 9.48091e-05 | 10.551 | 10.000 | 27.3127 |
-| VAE | 37 | Frozen SPOT | 4.87336e-05 | 10.551 | 10.000 | 35.7991 |
-| VAE | 37 | Adaptive DSPOT | 9.48091e-05 | 10.551 | 10.000 | 27.2083 |
+| DeepSVDD | 11 | Frozen SPOT | 0.00135811 | 10.551 | 10.000 | 1.16553 |
+| DeepSVDD | 11 | Adaptive DSPOT | 0.00264215 | 15.826 | 10.000 | 0.914898 |
+| DeepSVDD | 23 | Frozen SPOT | 0.00115741 | 15.826 | 10.000 | 1.36922 |
+| DeepSVDD | 23 | Adaptive DSPOT | 0.00135811 | 10.551 | 10.000 | 1.28297 |
+| DeepSVDD | 37 | Frozen SPOT | 0.00115741 | 14.067 | 10.000 | 1.81606 |
+| DeepSVDD | 37 | Adaptive DSPOT | 0.00115741 | 12.309 | 10.000 | 1.40333 |
+| VAE | 11 | Frozen SPOT | 4.87336e-05 | 10.551 | 10.000 | 36.2371 |
+| VAE | 11 | Adaptive DSPOT | 9.48091e-05 | 10.551 | 10.000 | 27.1587 |
+| VAE | 23 | Frozen SPOT | 4.87336e-05 | 10.551 | 10.000 | 36.3569 |
+| VAE | 23 | Adaptive DSPOT | 9.48091e-05 | 10.551 | 10.000 | 27.3739 |
+| VAE | 37 | Frozen SPOT | 4.87336e-05 | 10.551 | 10.000 | 36.3098 |
+| VAE | 37 | Adaptive DSPOT | 9.48091e-05 | 10.551 | 10.000 | 26.8645 |
 
 ### Metrics and attribution
 
@@ -89,14 +89,14 @@ Entries are mean ± sample standard deviation across the three seeds. Event reca
 | PCA | 21.03 | Adaptive | 0.480 ± 0.000 | 0.386 ± 0.000 | 0.370 ± 0.000 | 0.502 ± 0.000 | 18.93 ± 0.00 | 0.229 ± 0.000 |
 | PCA | 23.05 | Frozen | 1.000 ± 0.000 | 0.000 ± 0.000 | 0.076 ± 0.000 | 0.110 ± 0.000 | 8296.59 ± 0.00 | 0.033 ± 0.000 |
 | PCA | 23.05 | Adaptive | 1.000 ± 0.000 | 0.000 ± 0.000 | 0.076 ± 0.000 | 0.110 ± 0.000 | 8296.59 ± 0.00 | 0.033 ± 0.000 |
-| DeepSVDD | 21.03 | Frozen | 0.773 ± 0.012 | 0.543 ± 0.027 | 0.622 ± 0.009 | 0.489 ± 0.002 | 66.02 ± 11.06 | 0.171 ± 0.029 |
-| DeepSVDD | 21.03 | Adaptive | 0.800 ± 0.020 | 0.527 ± 0.020 | 0.614 ± 0.007 | 0.489 ± 0.002 | 76.99 ± 4.96 | 0.171 ± 0.029 |
-| DeepSVDD | 23.05 | Frozen | 1.000 ± 0.000 | 0.000 ± 0.000 | 0.076 ± 0.000 | 0.091 ± 0.001 | 8296.59 ± 0.00 | 0.100 ± 0.000 |
-| DeepSVDD | 23.05 | Adaptive | 1.000 ± 0.000 | 0.000 ± 0.000 | 0.076 ± 0.000 | 0.091 ± 0.001 | 8296.59 ± 0.00 | 0.100 ± 0.000 |
-| VAE | 21.03 | Frozen | 0.560 ± 0.000 | 0.473 ± 0.002 | 0.313 ± 0.005 | 0.462 ± 0.001 | 18.28 ± 0.00 | 0.257 ± 0.000 |
-| VAE | 21.03 | Adaptive | 0.340 ± 0.000 | 0.313 ± 0.010 | 0.222 ± 0.005 | 0.462 ± 0.001 | 14.48 ± 0.33 | 0.257 ± 0.000 |
-| VAE | 23.05 | Frozen | 0.154 ± 0.000 | 0.104 ± 0.001 | 0.217 ± 0.001 | 0.232 ± 0.002 | 16.41 ± 0.53 | 0.200 ± 0.000 |
-| VAE | 23.05 | Adaptive | 0.115 ± 0.000 | 0.095 ± 0.000 | 0.088 ± 0.002 | 0.232 ± 0.002 | 5.47 ± 0.00 | 0.200 ± 0.000 |
+| DeepSVDD | 21.03 | Frozen | 0.787 ± 0.012 | 0.533 ± 0.036 | 0.614 ± 0.011 | 0.486 ± 0.002 | 73.98 ± 12.16 | 0.152 ± 0.072 |
+| DeepSVDD | 21.03 | Adaptive | 0.813 ± 0.012 | 0.528 ± 0.006 | 0.607 ± 0.009 | 0.486 ± 0.002 | 85.74 ± 11.71 | 0.152 ± 0.072 |
+| DeepSVDD | 23.05 | Frozen | 1.000 ± 0.000 | 0.000 ± 0.000 | 0.076 ± 0.000 | 0.092 ± 0.003 | 8296.59 ± 0.00 | 0.100 ± 0.000 |
+| DeepSVDD | 23.05 | Adaptive | 1.000 ± 0.000 | 0.000 ± 0.000 | 0.076 ± 0.000 | 0.092 ± 0.003 | 8296.59 ± 0.00 | 0.100 ± 0.000 |
+| VAE | 21.03 | Frozen | 0.560 ± 0.000 | 0.473 ± 0.000 | 0.313 ± 0.001 | 0.462 ± 0.001 | 18.28 ± 0.00 | 0.257 ± 0.000 |
+| VAE | 21.03 | Adaptive | 0.340 ± 0.000 | 0.319 ± 0.001 | 0.218 ± 0.003 | 0.462 ± 0.001 | 13.91 ± 0.50 | 0.257 ± 0.000 |
+| VAE | 23.05 | Frozen | 0.154 ± 0.000 | 0.103 ± 0.000 | 0.216 ± 0.000 | 0.232 ± 0.000 | 16.41 ± 0.00 | 0.200 ± 0.000 |
+| VAE | 23.05 | Adaptive | 0.115 ± 0.000 | 0.095 ± 0.000 | 0.089 ± 0.002 | 0.232 ± 0.000 | 5.47 ± 0.00 | 0.200 ± 0.000 |
 
 ![Event detection rates on 21.03 and 23.05 for both deployment arms.](../figures/degradation.png)
 
@@ -120,29 +120,29 @@ The following tables include every model, seed, domain, and arm. No run is hidde
 | PCA | 37 | 21.03 | Adaptive | 24/50 | 0.480 | 0.671 | 0.270 | 0.386 | 0.360 |
 | PCA | 37 | 23.05 | Frozen | 52/52 | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | PCA | 37 | 23.05 | Adaptive | 52/52 | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| DeepSVDD | 11 | 21.03 | Frozen | 39/50 | 0.780 | 0.522 | 0.552 | 0.537 | 0.620 |
-| DeepSVDD | 11 | 21.03 | Adaptive | 40/50 | 0.800 | 0.522 | 0.551 | 0.536 | 0.620 |
+| DeepSVDD | 11 | 21.03 | Frozen | 40/50 | 0.800 | 0.500 | 0.561 | 0.529 | 0.640 |
+| DeepSVDD | 11 | 21.03 | Adaptive | 41/50 | 0.820 | 0.463 | 0.607 | 0.525 | 0.700 |
 | DeepSVDD | 11 | 23.05 | Frozen | 52/52 | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | DeepSVDD | 11 | 23.05 | Adaptive | 52/52 | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| DeepSVDD | 23 | 21.03 | Frozen | 39/50 | 0.780 | 0.485 | 0.561 | 0.520 | 0.620 |
-| DeepSVDD | 23 | 21.03 | Adaptive | 39/50 | 0.780 | 0.491 | 0.601 | 0.540 | 0.680 |
+| DeepSVDD | 23 | 21.03 | Frozen | 39/50 | 0.780 | 0.462 | 0.545 | 0.500 | 0.600 |
+| DeepSVDD | 23 | 21.03 | Adaptive | 40/50 | 0.800 | 0.484 | 0.570 | 0.524 | 0.640 |
 | DeepSVDD | 23 | 23.05 | Frozen | 52/52 | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | DeepSVDD | 23 | 23.05 | Adaptive | 52/52 | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| DeepSVDD | 37 | 21.03 | Frozen | 38/50 | 0.760 | 0.606 | 0.541 | 0.572 | 0.620 |
-| DeepSVDD | 37 | 21.03 | Adaptive | 41/50 | 0.820 | 0.468 | 0.544 | 0.504 | 0.620 |
+| DeepSVDD | 37 | 21.03 | Frozen | 39/50 | 0.780 | 0.581 | 0.561 | 0.571 | 0.640 |
+| DeepSVDD | 37 | 21.03 | Adaptive | 41/50 | 0.820 | 0.509 | 0.562 | 0.534 | 0.640 |
 | DeepSVDD | 37 | 23.05 | Frozen | 52/52 | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | DeepSVDD | 37 | 23.05 | Adaptive | 52/52 | 1.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| VAE | 11 | 21.03 | Frozen | 28/50 | 0.560 | 0.684 | 0.359 | 0.471 | 0.520 |
-| VAE | 11 | 21.03 | Adaptive | 17/50 | 0.340 | 0.585 | 0.203 | 0.302 | 0.280 |
-| VAE | 11 | 23.05 | Frozen | 8/52 | 0.154 | 0.596 | 0.057 | 0.103 | 0.077 |
-| VAE | 11 | 23.05 | Adaptive | 6/52 | 0.115 | 0.636 | 0.051 | 0.095 | 0.077 |
-| VAE | 23 | 21.03 | Frozen | 28/50 | 0.560 | 0.684 | 0.362 | 0.473 | 0.520 |
-| VAE | 23 | 21.03 | Adaptive | 17/50 | 0.340 | 0.601 | 0.215 | 0.317 | 0.300 |
-| VAE | 23 | 23.05 | Frozen | 8/52 | 0.154 | 0.577 | 0.057 | 0.105 | 0.077 |
-| VAE | 23 | 23.05 | Adaptive | 6/52 | 0.115 | 0.620 | 0.051 | 0.094 | 0.077 |
-| VAE | 37 | 21.03 | Frozen | 28/50 | 0.560 | 0.688 | 0.361 | 0.474 | 0.520 |
-| VAE | 37 | 21.03 | Adaptive | 17/50 | 0.340 | 0.609 | 0.217 | 0.320 | 0.300 |
-| VAE | 37 | 23.05 | Frozen | 8/52 | 0.154 | 0.576 | 0.057 | 0.103 | 0.077 |
+| VAE | 11 | 21.03 | Frozen | 28/50 | 0.560 | 0.688 | 0.361 | 0.473 | 0.520 |
+| VAE | 11 | 21.03 | Adaptive | 17/50 | 0.340 | 0.612 | 0.215 | 0.318 | 0.300 |
+| VAE | 11 | 23.05 | Frozen | 8/52 | 0.154 | 0.583 | 0.057 | 0.103 | 0.077 |
+| VAE | 11 | 23.05 | Adaptive | 6/52 | 0.115 | 0.620 | 0.051 | 0.094 | 0.077 |
+| VAE | 23 | 21.03 | Frozen | 28/50 | 0.560 | 0.687 | 0.361 | 0.473 | 0.520 |
+| VAE | 23 | 21.03 | Adaptive | 17/50 | 0.340 | 0.609 | 0.216 | 0.319 | 0.300 |
+| VAE | 23 | 23.05 | Frozen | 8/52 | 0.154 | 0.583 | 0.057 | 0.103 | 0.077 |
+| VAE | 23 | 23.05 | Adaptive | 6/52 | 0.115 | 0.643 | 0.051 | 0.095 | 0.077 |
+| VAE | 37 | 21.03 | Frozen | 28/50 | 0.560 | 0.688 | 0.361 | 0.473 | 0.520 |
+| VAE | 37 | 21.03 | Adaptive | 17/50 | 0.340 | 0.609 | 0.216 | 0.319 | 0.300 |
+| VAE | 37 | 23.05 | Frozen | 8/52 | 0.154 | 0.583 | 0.057 | 0.103 | 0.077 |
 | VAE | 37 | 23.05 | Adaptive | 6/52 | 0.115 | 0.643 | 0.051 | 0.095 | 0.077 |
 
 #### Point-wise and threshold-independent metrics
@@ -161,29 +161,29 @@ The following tables include every model, seed, domain, and arm. No run is hidde
 | PCA | 37 | 21.03 | Adaptive | 0.716 | 0.250 | 0.370 | 0.502 | 0.867 |
 | PCA | 37 | 23.05 | Frozen | 0.040 | 1.000 | 0.076 | 0.110 | 0.499 |
 | PCA | 37 | 23.05 | Adaptive | 0.040 | 1.000 | 0.076 | 0.110 | 0.499 |
-| DeepSVDD | 11 | 21.03 | Frozen | 0.626 | 0.613 | 0.620 | 0.488 | 0.846 |
-| DeepSVDD | 11 | 21.03 | Adaptive | 0.623 | 0.622 | 0.623 | 0.488 | 0.846 |
-| DeepSVDD | 11 | 23.05 | Frozen | 0.040 | 1.000 | 0.076 | 0.090 | 0.429 |
-| DeepSVDD | 11 | 23.05 | Adaptive | 0.040 | 1.000 | 0.076 | 0.090 | 0.429 |
-| DeepSVDD | 23 | 21.03 | Frozen | 0.612 | 0.616 | 0.614 | 0.491 | 0.851 |
-| DeepSVDD | 23 | 21.03 | Adaptive | 0.594 | 0.625 | 0.609 | 0.491 | 0.851 |
-| DeepSVDD | 23 | 23.05 | Frozen | 0.040 | 1.000 | 0.076 | 0.090 | 0.436 |
-| DeepSVDD | 23 | 23.05 | Adaptive | 0.040 | 1.000 | 0.076 | 0.090 | 0.436 |
-| DeepSVDD | 37 | 21.03 | Frozen | 0.678 | 0.591 | 0.631 | 0.488 | 0.848 |
-| DeepSVDD | 37 | 21.03 | Adaptive | 0.604 | 0.618 | 0.611 | 0.488 | 0.848 |
-| DeepSVDD | 37 | 23.05 | Frozen | 0.040 | 1.000 | 0.076 | 0.091 | 0.428 |
-| DeepSVDD | 37 | 23.05 | Adaptive | 0.040 | 1.000 | 0.076 | 0.091 | 0.428 |
-| VAE | 11 | 21.03 | Frozen | 0.676 | 0.199 | 0.308 | 0.461 | 0.871 |
-| VAE | 11 | 21.03 | Adaptive | 0.639 | 0.137 | 0.226 | 0.461 | 0.871 |
-| VAE | 11 | 23.05 | Frozen | 0.733 | 0.127 | 0.216 | 0.230 | 0.607 |
-| VAE | 11 | 23.05 | Adaptive | 0.746 | 0.047 | 0.088 | 0.230 | 0.607 |
-| VAE | 23 | 21.03 | Frozen | 0.683 | 0.206 | 0.316 | 0.461 | 0.871 |
-| VAE | 23 | 21.03 | Adaptive | 0.637 | 0.130 | 0.217 | 0.461 | 0.871 |
-| VAE | 23 | 23.05 | Frozen | 0.725 | 0.128 | 0.218 | 0.233 | 0.643 |
-| VAE | 23 | 23.05 | Adaptive | 0.743 | 0.046 | 0.087 | 0.233 | 0.643 |
-| VAE | 37 | 21.03 | Frozen | 0.682 | 0.205 | 0.315 | 0.463 | 0.871 |
-| VAE | 37 | 21.03 | Adaptive | 0.642 | 0.135 | 0.223 | 0.463 | 0.871 |
-| VAE | 37 | 23.05 | Frozen | 0.724 | 0.127 | 0.217 | 0.232 | 0.645 |
+| DeepSVDD | 11 | 21.03 | Frozen | 0.597 | 0.619 | 0.608 | 0.485 | 0.840 |
+| DeepSVDD | 11 | 21.03 | Adaptive | 0.556 | 0.645 | 0.597 | 0.485 | 0.840 |
+| DeepSVDD | 11 | 23.05 | Frozen | 0.040 | 1.000 | 0.076 | 0.089 | 0.424 |
+| DeepSVDD | 11 | 23.05 | Adaptive | 0.040 | 1.000 | 0.076 | 0.089 | 0.424 |
+| DeepSVDD | 23 | 21.03 | Frozen | 0.591 | 0.622 | 0.606 | 0.488 | 0.853 |
+| DeepSVDD | 23 | 21.03 | Adaptive | 0.592 | 0.632 | 0.612 | 0.488 | 0.853 |
+| DeepSVDD | 23 | 23.05 | Frozen | 0.040 | 1.000 | 0.076 | 0.094 | 0.447 |
+| DeepSVDD | 23 | 23.05 | Adaptive | 0.040 | 1.000 | 0.076 | 0.094 | 0.447 |
+| DeepSVDD | 37 | 21.03 | Frozen | 0.656 | 0.600 | 0.627 | 0.484 | 0.844 |
+| DeepSVDD | 37 | 21.03 | Adaptive | 0.610 | 0.618 | 0.614 | 0.484 | 0.844 |
+| DeepSVDD | 37 | 23.05 | Frozen | 0.040 | 1.000 | 0.076 | 0.092 | 0.428 |
+| DeepSVDD | 37 | 23.05 | Adaptive | 0.040 | 1.000 | 0.076 | 0.092 | 0.428 |
+| VAE | 11 | 21.03 | Frozen | 0.680 | 0.204 | 0.313 | 0.461 | 0.871 |
+| VAE | 11 | 21.03 | Adaptive | 0.648 | 0.128 | 0.214 | 0.461 | 0.871 |
+| VAE | 11 | 23.05 | Frozen | 0.726 | 0.127 | 0.216 | 0.232 | 0.628 |
+| VAE | 11 | 23.05 | Adaptive | 0.743 | 0.046 | 0.087 | 0.232 | 0.628 |
+| VAE | 23 | 21.03 | Frozen | 0.679 | 0.202 | 0.312 | 0.462 | 0.871 |
+| VAE | 23 | 21.03 | Adaptive | 0.641 | 0.133 | 0.220 | 0.462 | 0.871 |
+| VAE | 23 | 23.05 | Frozen | 0.726 | 0.127 | 0.216 | 0.233 | 0.644 |
+| VAE | 23 | 23.05 | Adaptive | 0.750 | 0.048 | 0.090 | 0.233 | 0.644 |
+| VAE | 37 | 21.03 | Frozen | 0.680 | 0.204 | 0.313 | 0.462 | 0.871 |
+| VAE | 37 | 21.03 | Adaptive | 0.641 | 0.133 | 0.220 | 0.462 | 0.871 |
+| VAE | 37 | 23.05 | Frozen | 0.726 | 0.127 | 0.216 | 0.232 | 0.645 |
 | VAE | 37 | 23.05 | Adaptive | 0.750 | 0.048 | 0.090 | 0.232 | 0.645 |
 
 ![Cross-domain PR-AUC without duplicate arm bars.](../figures/cross_pr_auc.png)
@@ -206,29 +206,29 @@ The PR-AUC figure intentionally has one bar per model rather than duplicate froz
 | PCA | 37 | 21.03 | Adaptive | 310 | 88 | 18.93 | 4.650 | 55.8 | 46.0 | 0.700 | 0.229 |
 | PCA | 37 | 23.05 | Frozen | 28430 | 27300 | 8296.59 | 3.291 | 6.1 | 6.5 | 0.577 | 0.033 |
 | PCA | 37 | 23.05 | Adaptive | 28430 | 27300 | 8296.59 | 3.291 | 6.1 | 6.5 | 0.577 | 0.033 |
-| DeepSVDD | 11 | 21.03 | Frozen | 870 | 325 | 69.89 | 4.650 | 38.8 | 28.0 | 0.700 | 0.171 |
-| DeepSVDD | 11 | 21.03 | Adaptive | 887 | 334 | 71.83 | 4.650 | 39.1 | 27.5 | 0.700 | 0.171 |
+| DeepSVDD | 11 | 21.03 | Frozen | 921 | 371 | 79.79 | 4.650 | 39.6 | 28.0 | 0.700 | 0.143 |
+| DeepSVDD | 11 | 21.03 | Adaptive | 1031 | 458 | 98.50 | 4.650 | 36.9 | 27.0 | 0.700 | 0.143 |
 | DeepSVDD | 11 | 23.05 | Frozen | 28430 | 27300 | 8296.59 | 3.291 | 6.1 | 6.5 | 0.577 | 0.100 |
 | DeepSVDD | 11 | 23.05 | Adaptive | 28430 | 27300 | 8296.59 | 3.291 | 6.1 | 6.5 | 0.577 | 0.100 |
-| DeepSVDD | 23 | 21.03 | Frozen | 895 | 347 | 74.63 | 4.650 | 37.8 | 28.0 | 0.700 | 0.200 |
-| DeepSVDD | 23 | 21.03 | Adaptive | 936 | 380 | 81.72 | 4.650 | 36.3 | 27.0 | 0.700 | 0.200 |
+| DeepSVDD | 23 | 21.03 | Frozen | 935 | 382 | 82.15 | 4.650 | 37.1 | 28.0 | 0.700 | 0.229 |
+| DeepSVDD | 23 | 21.03 | Adaptive | 949 | 387 | 83.23 | 4.650 | 36.9 | 27.0 | 0.700 | 0.229 |
 | DeepSVDD | 23 | 23.05 | Frozen | 28430 | 27300 | 8296.59 | 3.291 | 6.1 | 6.5 | 0.577 | 0.100 |
 | DeepSVDD | 23 | 23.05 | Adaptive | 28430 | 27300 | 8296.59 | 3.291 | 6.1 | 6.5 | 0.577 | 0.100 |
-| DeepSVDD | 37 | 21.03 | Frozen | 774 | 249 | 53.55 | 4.650 | 38.3 | 31.5 | 0.700 | 0.143 |
-| DeepSVDD | 37 | 21.03 | Adaptive | 909 | 360 | 77.42 | 4.650 | 42.2 | 33.0 | 0.700 | 0.143 |
+| DeepSVDD | 37 | 21.03 | Frozen | 812 | 279 | 60.00 | 4.650 | 38.6 | 30.0 | 0.700 | 0.086 |
+| DeepSVDD | 37 | 21.03 | Adaptive | 900 | 351 | 75.49 | 4.650 | 42.5 | 33.0 | 0.700 | 0.086 |
 | DeepSVDD | 37 | 23.05 | Frozen | 28430 | 27300 | 8296.59 | 3.291 | 6.1 | 6.5 | 0.577 | 0.100 |
 | DeepSVDD | 37 | 23.05 | Adaptive | 28430 | 27300 | 8296.59 | 3.291 | 6.1 | 6.5 | 0.577 | 0.100 |
-| VAE | 11 | 21.03 | Frozen | 262 | 85 | 18.28 | 4.650 | 63.1 | 46.5 | 0.700 | 0.257 |
-| VAE | 11 | 21.03 | Adaptive | 191 | 69 | 14.84 | 4.650 | 61.0 | 49.0 | 0.700 | 0.257 |
-| VAE | 11 | 23.05 | Frozen | 195 | 52 | 15.80 | 3.291 | 78.0 | 45.0 | 0.577 | 0.200 |
-| VAE | 11 | 23.05 | Adaptive | 71 | 18 | 5.47 | 3.291 | 73.5 | 44.5 | 0.577 | 0.200 |
-| VAE | 23 | 21.03 | Frozen | 268 | 85 | 18.28 | 4.650 | 62.8 | 46.5 | 0.700 | 0.257 |
-| VAE | 23 | 21.03 | Adaptive | 182 | 66 | 14.19 | 4.650 | 62.2 | 49.0 | 0.700 | 0.257 |
-| VAE | 23 | 23.05 | Frozen | 200 | 55 | 16.71 | 3.291 | 76.8 | 44.5 | 0.577 | 0.200 |
-| VAE | 23 | 23.05 | Adaptive | 70 | 18 | 5.47 | 3.291 | 73.5 | 44.5 | 0.577 | 0.200 |
-| VAE | 37 | 21.03 | Frozen | 267 | 85 | 18.28 | 4.650 | 62.8 | 46.5 | 0.700 | 0.257 |
-| VAE | 37 | 21.03 | Adaptive | 187 | 67 | 14.41 | 4.650 | 61.0 | 49.0 | 0.700 | 0.257 |
-| VAE | 37 | 23.05 | Frozen | 199 | 55 | 16.71 | 3.291 | 78.0 | 45.0 | 0.577 | 0.200 |
+| VAE | 11 | 21.03 | Frozen | 266 | 85 | 18.28 | 4.650 | 62.8 | 46.5 | 0.700 | 0.257 |
+| VAE | 11 | 21.03 | Adaptive | 176 | 62 | 13.33 | 4.650 | 63.4 | 49.0 | 0.700 | 0.257 |
+| VAE | 11 | 23.05 | Frozen | 197 | 54 | 16.41 | 3.291 | 78.0 | 45.0 | 0.577 | 0.200 |
+| VAE | 11 | 23.05 | Adaptive | 70 | 18 | 5.47 | 3.291 | 73.5 | 44.5 | 0.577 | 0.200 |
+| VAE | 23 | 21.03 | Frozen | 265 | 85 | 18.28 | 4.650 | 63.1 | 46.5 | 0.700 | 0.257 |
+| VAE | 23 | 21.03 | Adaptive | 184 | 66 | 14.19 | 4.650 | 62.2 | 49.0 | 0.700 | 0.257 |
+| VAE | 23 | 23.05 | Frozen | 197 | 54 | 16.41 | 3.291 | 78.0 | 45.0 | 0.577 | 0.200 |
+| VAE | 23 | 23.05 | Adaptive | 72 | 18 | 5.47 | 3.291 | 73.5 | 44.5 | 0.577 | 0.200 |
+| VAE | 37 | 21.03 | Frozen | 266 | 85 | 18.28 | 4.650 | 62.8 | 46.5 | 0.700 | 0.257 |
+| VAE | 37 | 21.03 | Adaptive | 184 | 66 | 14.19 | 4.650 | 62.8 | 49.0 | 0.700 | 0.257 |
+| VAE | 37 | 23.05 | Frozen | 197 | 54 | 16.41 | 3.291 | 78.0 | 45.0 | 0.577 | 0.200 |
 | VAE | 37 | 23.05 | Adaptive | 72 | 18 | 5.47 | 3.291 | 73.5 | 44.5 | 0.577 | 0.200 |
 
 ![Cross-domain false-alarm rates on a logarithmic axis with the calibration target.](../figures/false_alarm_budget.png)
@@ -246,12 +246,12 @@ For each model, seed, and metric, degradation is `loss = metric_21_frozen - metr
 | PCA | Event recall | 0.740 ± 0.000 | 1.000 ± 0.000 | 1.000 ± 0.000 | -0.260 ± 0.000 | 0.000 ± 0.000 | n/a ± n/a | n/a |
 | PCA | eTa F1 | 0.533 ± 0.000 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.533 ± 0.000 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 |
 | PCA | Point F1 | 0.548 ± 0.000 | 0.076 ± 0.000 | 0.076 ± 0.000 | 0.471 ± 0.000 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 |
-| DeepSVDD | Event recall | 0.773 ± 0.012 | 1.000 ± 0.000 | 1.000 ± 0.000 | -0.227 ± 0.012 | 0.000 ± 0.000 | n/a ± n/a | n/a |
-| DeepSVDD | eTa F1 | 0.543 ± 0.027 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.543 ± 0.027 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 |
-| DeepSVDD | Point F1 | 0.622 ± 0.009 | 0.076 ± 0.000 | 0.076 ± 0.000 | 0.545 ± 0.009 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 |
+| DeepSVDD | Event recall | 0.787 ± 0.012 | 1.000 ± 0.000 | 1.000 ± 0.000 | -0.213 ± 0.012 | 0.000 ± 0.000 | n/a ± n/a | n/a |
+| DeepSVDD | eTa F1 | 0.533 ± 0.036 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.533 ± 0.036 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 |
+| DeepSVDD | Point F1 | 0.614 ± 0.011 | 0.076 ± 0.000 | 0.076 ± 0.000 | 0.537 ± 0.011 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 |
 | VAE | Event recall | 0.560 ± 0.000 | 0.154 ± 0.000 | 0.115 ± 0.000 | 0.406 ± 0.000 | -0.038 ± 0.000 | -0.095 ± 0.000 | -0.095 |
-| VAE | eTa F1 | 0.473 ± 0.002 | 0.104 ± 0.001 | 0.095 ± 0.000 | 0.369 ± 0.002 | -0.009 ± 0.001 | -0.024 ± 0.003 | -0.024 |
-| VAE | Point F1 | 0.313 ± 0.005 | 0.217 ± 0.001 | 0.088 ± 0.002 | 0.096 ± 0.004 | -0.129 ± 0.002 | -1.340 ± 0.050 | -1.339 |
+| VAE | eTa F1 | 0.473 ± 0.000 | 0.103 ± 0.000 | 0.095 ± 0.000 | 0.370 ± 0.000 | -0.008 ± 0.000 | -0.023 ± 0.001 | -0.023 |
+| VAE | Point F1 | 0.313 ± 0.001 | 0.216 ± 0.000 | 0.089 ± 0.002 | 0.097 ± 0.001 | -0.127 ± 0.002 | -1.301 ± 0.016 | -1.301 |
 
 In the table, F and A denote frozen and adaptive arms; ROM denotes ratio of means. `n/a` marks an undefined ratio, not zero recovery. Per-seed values are provided in `degradation_recovery.csv`; aggregate values and valid-seed counts are in `recovery_summary.csv`.
 
@@ -367,12 +367,115 @@ The following table lists every eligible attack with at least one hit@3 miss. Ce
 | A231 | test2 | P3_LCP01D | 18/18 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 | A233 | test2 | P1_LCV01D, P1_LIT01 | 18/18 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 
+## Statistical Checks (added)
+
+These checks were run after the original analysis. They reuse the saved per-window and per-sensor scores; no model was retrained. Scripts and raw outputs are in `analysis/` and `results/`.
+
+### Is the event-detection rate above chance?
+
+A circular shift rolls each model's alarm series within its stream, keeping the run structure and destroying only its alignment with the attacks (200 shifts per configuration).
+
+| Model | Domain | Arm | Observed | Null mean | p |
+| --- | --- | --- | --- | --- | --- |
+| pca | 21.03 | frozen | 0.740 | 0.032 | 0.000 |
+| pca | 21.03 | adaptive | 0.480 | 0.016 | 0.000 |
+| pca | 23.05 | frozen | 1.000 | 1.000 | 1.000 |
+| pca | 23.05 | adaptive | 1.000 | 1.000 | 1.000 |
+| svdd | 21.03 | frozen | 0.787 | 0.055 | 0.000 |
+| svdd | 21.03 | adaptive | 0.813 | 0.062 | 0.000 |
+| svdd | 23.05 | frozen | 1.000 | 1.000 | 1.000 |
+| svdd | 23.05 | adaptive | 1.000 | 1.000 | 1.000 |
+| vae | 21.03 | frozen | 0.560 | 0.020 | 0.000 |
+| vae | 21.03 | adaptive | 0.340 | 0.012 | 0.000 |
+| vae | 23.05 | frozen | 0.154 | 0.020 | 0.000 |
+| vae | 23.05 | adaptive | 0.115 | 0.009 | 0.000 |
+
+On 23.05 the DeepSVDD and PCA event recall of 1.000 is exactly what a randomly time-shifted alarm series achieves (p = 1.000). It is alarm collapse, not detection.
+
+### PR-AUC with 95% block-bootstrap intervals
+
+| Model | Domain | PR-AUC | 95% CI |
+| --- | --- | --- | --- |
+| pca | 21.03 | 0.502 | [0.404, 0.607] |
+| pca | 23.05 | 0.110 | [0.037, 0.183] |
+| svdd | 21.03 | 0.486 | [0.383, 0.598] |
+| svdd | 23.05 | 0.092 | [0.028, 0.157] |
+| vae | 21.03 | 0.462 | [0.372, 0.556] |
+| vae | 23.05 | 0.232 | [0.068, 0.381] |
+
+No in-domain interval overlaps its cross-domain counterpart: the degradation is significant, not a shift in the mean.
+
+### Paired tests on event recall
+
+| Domain | Comparison | Delta recall | p |
+| --- | --- | --- | --- |
+| 21.03 | pca vs svdd | -0.047 | 0.015 |
+| 21.03 | pca vs vae | +0.180 | 0.000 |
+| 21.03 | svdd vs vae | +0.227 | 0.000 |
+| 23.05 | pca vs svdd | +0.000 | 1.000 |
+| 23.05 | pca vs vae | +0.846 | 0.000 |
+| 23.05 | svdd vs vae | +0.846 | 0.000 |
+
+### Fusion ablation: is max fusion the cause of the collapse?
+
+| Model | Fusion | PR-AUC | Recall | FA/day |
+| --- | --- | --- | --- | --- |
+| pca | max | 0.110 | 1.000 | 8297 |
+| pca | mean | 0.128 | 1.000 | 8297 |
+| pca | median | 0.121 | 1.000 | 8297 |
+| pca | top3mean | 0.106 | 1.000 | 8196 |
+| svdd | max | 0.092 | 1.000 | 8297 |
+| svdd | mean | 0.136 | 1.000 | 8297 |
+| svdd | median | 0.039 | 0.513 | 1629 |
+| svdd | top3mean | 0.094 | 1.000 | 8297 |
+| vae | max | 0.232 | 0.154 | 16 |
+| vae | mean | 0.247 | 0.154 | 15 |
+| vae | median | 0.108 | 0.032 | 8 |
+| vae | top3mean | 0.243 | 0.154 | 12 |
+
+The collapse survives every fusion rule: PCA and Deep SVDD alarm continuously under max, mean and top3-mean. Max fusion is not the cause; the representation shift is. Mean fusion does improve cross-domain PR-AUC modestly and is worth adopting.
+
+### In-domain calibration already misses its target
+
+| Model | Source split /day | 21.03 test /day | Ratio to target |
+| --- | --- | --- | --- |
+| pca | 9.7 | 30.1 | 3.0x |
+| svdd | 13.5 | 74.0 | 7.4x |
+| vae | 10.6 | 18.3 | 1.8x |
+
+The EVT layer hits 10 alarms/day on its own calibration split and then misses by 1.8-7.4x on a different period of the same plant version. The cross-version failure amplifies an existing in-domain gap.
+
+### Are the documented targets consistent with the process labels?
+
+The documented target shares a process with the CSV per-process attack labels in **49 of 50** 21.03 attacks. The single exception is A220, where the documentation lists P2 while the CSV labels P3 and P4 — an internal inconsistency in the documentation, not a transcription error. 23.05 ships a single label column, so this check applies to 21.03 only.
+
+### Attribution: median rank and target type
+
+| Model | Domain | Median target rank (of 41; chance 21) |
+| --- | --- | --- |
+| pca | 21.03 | 8.0 |
+| pca | 23.05 | 17.5 |
+| svdd | 21.03 | 6.0 |
+| svdd | 23.05 | 15.0 |
+| vae | 21.03 | 7.0 |
+| vae | 23.05 | 19.0 |
+
+| Target type (23.05) | Median rank |
+| --- | --- |
+| actuator | 25.0 |
+| actuator+sensor | 10.0 |
+| actuator+sensor+setpoint | 8.5 |
+| actuator+setpoint | 21.5 |
+| sensor+setpoint | 13.0 |
+
+PCA's Hit@3 of 0.033 on 23.05 reads as useless, but its median rank of 17.5 is still better than chance. Hit@3 alone overstates the failure.
+
 ## Conclusions
 
-- Across models and seeds, frozen event detection moved from 0.691 on 21.03 to 0.718 on 23.05 (loss -0.027); the adaptive arm reached 0.705 on 23.05 (signed gain -0.013).
+- Across models and seeds, frozen event detection moved from 0.696 on 21.03 to 0.718 on 23.05 (loss -0.022); the adaptive arm reached 0.705 on 23.05 (signed gain -0.013).
 - The highest raw frozen 23.05 event recall belonged to PCA and DeepSVDD (1.000 ± 0.000); the highest raw adaptive recall belonged to PCA and DeepSVDD (1.000 ± 0.000). Raw recall is not a stand-alone measure of useful detection.
 - PCA and DeepSVDD had the largest signed mean DSPOT event-detection gain (+0.000; ratio-of-means recovery undefined). A positive gain is recovery, whereas a negative gain is an additional loss.
-- VAE achieved the highest mean 23.05 PR-AUC (0.232 ± 0.002). Frozen and adaptive PR-AUC are identical because both arms threshold the same continuous scores.
+- VAE achieved the highest mean 23.05 PR-AUC (0.232 ± 0.000). Frozen and adaptive PR-AUC are identical because both arms threshold the same continuous scores.
 - For VAE, frozen event recall moved from 0.560 on 21.03 to 0.154 on 23.05; DSPOT changed cross-domain recall to 0.115 (gain -0.038; recovery ROM -0.095) and false alarms from 16.41 to 5.47 per day.
 - Observed 23.05 false alarms spanned 5.470–8296.588 per day across runs; the source-normal calibration target was 10 per day. Near-continuous-alarm failure screen (at least 99.9% event recall and at least 90% normal-window false alarms): PCA / frozen (mean recall 1.000, mean FA/day 8296.59, normal-window alarm fraction 96.0%); PCA / adaptive (mean recall 1.000, mean FA/day 8296.59, normal-window alarm fraction 96.0%); DeepSVDD / frozen (mean recall 1.000, mean FA/day 8296.59, normal-window alarm fraction 96.0%); DeepSVDD / adaptive (mean recall 1.000, mean FA/day 8296.59, normal-window alarm fraction 96.0%). These high-recall conditions are alarm-collapse failures, not evidence of useful detection or DSPOT recovery.
 

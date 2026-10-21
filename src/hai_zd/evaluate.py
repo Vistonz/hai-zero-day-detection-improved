@@ -188,6 +188,12 @@ def evaluate(config: dict[str, Any], root: Path, models: list[str], seeds: list[
                     )
     metrics_frame = pd.DataFrame(metric_rows).sort_values(["model", "seed", "domain", "arm"])
     attacks_frame = pd.DataFrame(attack_rows).sort_values(["model", "seed", "arm", "domain", "file", "attack_id"])
+    # Keep version labels as text: "21.03" otherwise parses back as a float and every
+    # downstream `df[df.domain == "21.03"]` filter silently returns nothing.
+    for frame in (metrics_frame, attacks_frame):
+        for column in ("domain", "version"):
+            if column in frame.columns:
+                frame[column] = frame[column].astype(str)
     root.mkdir(parents=True, exist_ok=True)
     metrics_frame.to_csv(root / "metrics.csv", index=False)
     attacks_frame.to_csv(root / "per_attack.csv", index=False)

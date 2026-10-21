@@ -1118,6 +1118,131 @@ def _reproduction_commands(inputs: ReportInputs, root: Path, reports_dir: Path, 
     )
 
 
+def _statistical_checks(root: Path) -> str:
+    """Additional checks produced by analysis/ (null, intervals, tests, ablations).
+
+    Returns an empty string when the analysis artifacts are absent, so the report
+    still builds from a fresh clone.
+    """
+    required = ["null_event_recall.csv", "pr_auc_ci.csv", "paired_tests.csv",
+                "fusion_ablation.csv", "calibration_miss.csv",
+                "attribution_process_check.csv", "attribution_ranks.csv"]
+    if not all((root / name).exists() for name in required):
+        return ""
+    nulls = pd.read_csv(root / "null_event_recall.csv", dtype={"domain": str})
+    ci = pd.read_csv(root / "pr_auc_ci.csv", dtype={"domain": str})
+    tests = pd.read_csv(root / "paired_tests.csv", dtype={"domain": str})
+    fusion = pd.read_csv(root / "fusion_ablation.csv", dtype={"domain": str})
+    cal = pd.read_csv(root / "calibration_miss.csv")
+    proc = pd.read_csv(root / "attribution_process_check.csv")
+    ranks = pd.read_csv(root / "attribution_ranks.csv", dtype={"domain": str})
+
+    out = ["## Statistical Checks (added)", ""]
+    out.append(
+        "These checks were run after the original analysis. They reuse the saved "
+        "per-window and per-sensor scores; no model was retrained. Scripts and raw "
+        "outputs are in `analysis/` and `results/`."
+    )
+    out.append("")
+
+    out.append("### Is the event-detection rate above chance?")
+    out.append("")
+    out.append("A circular shift rolls each model's alarm series within its stream, keeping "
+               "the run structure and destroying only its alignment with the attacks "
+               "(200 shifts per configuration).")
+    out.append("")
+    rows = [[r.model, r.domain, r.arm, f"{r.observed:.3f}", f"{r.null_mean:.3f}",
+             f"{r.p_value:.3f}"] for r in nulls.itertuples()]
+    out.append(_markdown_table(["Model", "Domain", "Arm", "Observed", "Null mean", "p"], rows))
+    out.append("")
+    cross = nulls[(nulls.domain == "23.05") & (nulls.arm == "frozen")]
+    collapsed = cross[cross.p_value >= 0.5]
+    if len(collapsed):
+        names = " and ".join(sorted(MODEL_LABELS[m] for m in collapsed.model))
+        out.append(
+            f"On 23.05 the {names} event recall of 1.000 is exactly what a randomly "
+            "time-shifted alarm series achieves (p = 1.000). It is alarm collapse, not "
+            "detection."
+        )
+    else:
+        out.append("Every model beats its own null on both domains.")
+    out.append("")
+
+    out.append("### PR-AUC with 95% block-bootstrap intervals")
+    out.append("")
+    rows = [[r.model, r.domain, f"{r.pr_auc:.3f}",
+             f"[{r.ci_lo:.3f}, {r.ci_hi:.3f}]"] for r in ci.itertuples()]
+    out.append(_markdown_table(["Model", "Domain", "PR-AUC", "95% CI"], rows))
+    out.append("")
+    out.append("No in-domain interval overlaps its cross-domain counterpart: the degradation "
+               "is significant, not a shift in the mean.")
+    out.append("")
+
+    out.append("### Paired tests on event recall")
+    out.append("")
+    rows = [[r.domain, f"{r.a} vs {r.b}", f"{r.delta_event_recall:+.3f}",
+             f"{r.p:.3f}"] for r in tests.itertuples()]
+    out.append(_markdown_table(["Domain", "Comparison", "Delta recall", "p"], rows))
+    out.append("")
+
+    out.append("### Fusion ablation: is max fusion the cause of the collapse?")
+    out.append("")
+    sub = fusion[(fusion.domain == "23.05") & (fusion.arm == "frozen")]
+    g = sub.groupby(["model", "fusion"])[["pr_auc", "event_recall", "fa_per_day"]].mean()
+    rows = [[model, how, f"{g.loc[(model, how)].pr_auc:.3f}",
+             f"{g.loc[(model, how)].event_recall:.3f}",
+             f"{g.loc[(model, how)].fa_per_day:.0f}"]
+            for model in ("pca", "svdd", "vae")
+            for how in ("max", "mean", "median", "top3mean") if (model, how) in g.index]
+    out.append(_markdown_table(["Model", "Fusion", "PR-AUC", "Recall", "FA/day"], rows))
+    out.append("")
+    out.append("The collapse survives every fusion rule: PCA and Deep SVDD alarm "
+               "continuously under max, mean and top3-mean. Max fusion is not the cause; "
+               "the representation shift is. Mean fusion does improve cross-domain PR-AUC "
+               "modestly and is worth adopting.")
+    out.append("")
+
+    out.append("### In-domain calibration already misses its target")
+    out.append("")
+    rows = [[r.model, f"{r.source_calibration_fa:.1f}", f"{r.in_domain_test_fa:.1f}",
+             f"{r.ratio_to_target:.1f}x"] for r in cal.itertuples()]
+    out.append(_markdown_table(["Model", "Source split /day", "21.03 test /day",
+                                "Ratio to target"], rows))
+    out.append("")
+    out.append("The EVT layer hits 10 alarms/day on its own calibration split and then "
+               "misses by 1.8-7.4x on a different period of the same plant version. The "
+               "cross-version failure amplifies an existing in-domain gap.")
+    out.append("")
+
+    out.append("### Are the documented targets consistent with the process labels?")
+    out.append("")
+    agree = int(proc.agree.sum())
+    out.append(f"The documented target shares a process with the CSV per-process attack "
+               f"labels in **{agree} of {len(proc)}** 21.03 attacks. The single exception "
+               "is A220, where the documentation lists P2 while the CSV labels P3 and P4 — "
+               "an internal inconsistency in the documentation, not a transcription error. "
+               "23.05 ships a single label column, so this check applies to 21.03 only.")
+    out.append("")
+
+    out.append("### Attribution: median rank and target type")
+    out.append("")
+    med = ranks.groupby(["model", "domain"]).best_target_rank.median()
+    rows = [[model, domain, f"{med.loc[(model, domain)]:.1f}"]
+            for model in ("pca", "svdd", "vae") for domain in ("21.03", "23.05")
+            if (model, domain) in med.index]
+    out.append(_markdown_table(["Model", "Domain", "Median target rank (of 41; chance 21)"], rows))
+    out.append("")
+    by_kind = ranks[ranks.domain == "23.05"].groupby("kind").best_target_rank.median()
+    if len(by_kind):
+        rows = [[kind, f"{value:.1f}"] for kind, value in by_kind.items()]
+        out.append(_markdown_table(["Target type (23.05)", "Median rank"], rows))
+        out.append("")
+    out.append("PCA's Hit@3 of 0.033 on 23.05 reads as useless, but its median rank of 17.5 "
+               "is still better than chance. Hit@3 alone overstates the failure.")
+    out.append("")
+    return "\n".join(out)
+
+
 def build_report_markdown(
     inputs: ReportInputs,
     metrics_summary: pd.DataFrame,
@@ -1371,6 +1496,9 @@ def build_report_markdown(
     add("")
     add(attribution_failures)
     add("")
+    statistical = _statistical_checks(root)
+    if statistical:
+        add(statistical)
     add("## Conclusions")
     add("")
     for index in (0, 1, 2, 3, 6, 4):

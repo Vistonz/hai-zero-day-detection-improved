@@ -1,0 +1,229 @@
+\documentclass{beamer}
+\usepackage[orientation=portrait,size=a2,scale=1.3]{beamerposter}
+\mode<presentation>{\usetheme{ZH}}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array,tabularx}
+\usepackage{hyperref}
+\usepackage{ragged2e}
+\usepackage[font=scriptsize,justification=justified]{caption}
+\usepackage{helvet}
+\newcolumntype{Z}{>{\centering\arraybackslash}X}
+
+\title{\huge Zero-Day Detection under\\ HAI Plant-Version Shift}
+\author{Hongbin Zhang, Zeren Wang}
+\institute[Chalmers]{Project Group 88 \,\textbullet\, SSY340 Deep Machine Learning \,\textbullet\, Chalmers University of Technology}
+\date{\today}
+
+\newlength{\columnheight}
+\setlength{\columnheight}{46cm}
+
+\begin{document}
+\begin{frame}
+\begin{columns}
+
+% ============================== COLUMN 1 ==============================
+\begin{column}{.30\textwidth}
+\begin{beamercolorbox}[center]{postercolumn}
+\begin{minipage}{.98\textwidth}
+\parbox[t][\columnheight]{\textwidth}{
+
+\begin{myblock}{The problem}
+A zero-day detector must flag attacks it has never seen, trained on normal
+operation alone. The harder version of that question is what this poster is about:
+\emph{what happens when the plant itself is replaced by a later, differently
+instrumented version?} HAI 21.03 and 23.05 are two such versions of the same
+testbed, sharing 59 tags but not the same instrumentation.
+
+A detector that works in-domain may simply stop working when the baseline shifts,
+and no amount of threshold tuning can repair a representation that no longer
+separates attacks from normal operation.
+\end{myblock}\vfill
+
+\begin{myblock}{What we asked}
+\begin{itemize}
+  \item \textbf{RQ1.} How much do event detection, eTaPR and point F1 degrade from
+        21.03 to 23.05 when the decision threshold is frozen at its source value?
+  \item \textbf{RQ2.} How much of that loss does a source-calibrated DSPOT recover,
+        and at what observed alarm rate?
+  \item \textbf{RQ3.} Do threshold-free ranking metrics support the same conclusion
+        as thresholded event metrics?
+  \item \textbf{RQ4.} Do the top-3 anomalous sensors include a documented attack
+        target?
+\end{itemize}
+\end{myblock}\vfill
+
+\begin{myblock}{Data}
+\begin{center}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{partition} & \textbf{files} & \textbf{rows} & \textbf{attacks} \\
+\midrule
+21.03 normal training & 3 & 921,603 & 0 \\
+21.03 test & 5 & 402,005 & 50 \\
+23.05 test & 2 & 284,400 & 52 \\
+\midrule
+all streams & 10 & 1,608,008 & 102 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.25cm}
+The two versions share 59 public tags; 18 have zero variance throughout the normal
+21.03 training data and are removed \emph{using source statistics only}, leaving
+\textbf{41 modelling tags}. Their constant source encoding would otherwise dominate
+max-fused scores after the shift.
+\end{myblock}\vfill
+
+\begin{myblock}{Protocol: no labels, anywhere}
+\begin{itemize}
+  \item Attack labels are used for \textbf{evaluation only} --- never for training,
+        model selection, or threshold calibration.
+  \item Normalisation is fitted on chronological 21.03 training partitions; the last
+        15\% supplies normal calibration scores.
+  \item EVT calibrated on \textbf{source-normal} scores to an empirical target of
+        \textbf{10 false alarms/day}.
+  \item Three seeds (11, 23, 37). No point adjustment.
+\end{itemize}
+\end{myblock}
+
+}\end{minipage}\end{beamercolorbox}
+\end{column}
+
+% ============================== COLUMN 2 ==============================
+\begin{column}{.325\textwidth}
+\begin{beamercolorbox}[center]{postercolumn}
+\begin{minipage}{.98\textwidth}
+\parbox[t][\columnheight]{\textwidth}{
+
+\begin{myblock}{What we built}
+Three detectors, trained on normal 21.03 data only:
+\begin{itemize}
+  \item \textbf{PCA} reconstruction on flattened windows.
+  \item \textbf{Deep SVDD} --- a three-layer bias-free 1-D convolutional trunk into a
+        latent hypersphere (13,904 parameters).
+  \item \textbf{Convolutional VAE} --- the same trunk, plus Gaussian heads and a
+        decoder (26,352 parameters).
+\end{itemize}
+
+\vspace{0.2cm}
+Windows are causal (60\,s, scored at the window end, 10\,s evaluation stride).
+Per-sensor scores are fused by \textbf{maximum}, so an alarm needs one strongly
+anomalous sensor. The two neural models share the trunk but not the total parameter
+count, and that gap is reported rather than hidden.
+\end{myblock}\vfill
+
+\begin{myblock}{Result 1: in-domain, at a realistic alarm budget}
+At 10 false alarms per day on 21.03, all three detectors work moderately --- and
+none of them works well:
+
+\begin{center}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& \textbf{event recall} & \textbf{eTaF1} & \textbf{PR-AUC} & \textbf{Hit@3} \\
+\midrule
+PCA & 0.740 & 0.533 & 0.502 & 0.229 \\
+Deep SVDD & \textbf{0.773} & \textbf{0.543} & 0.489 & 0.171 \\
+VAE & 0.560 & 0.473 & 0.462 & \textbf{0.257} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.15cm}
+A PR-AUC near 0.5 at a 1--2\% attack rate is a weak ranker, not a solved problem.
+That matters for what follows: there was little to lose.
+\end{myblock}\vfill
+
+\begin{myblock}{Result 2: the representation collapses}
+\begin{figure}
+\centering
+\includegraphics[width=0.98\linewidth]{fig/fig_prauc.png}
+\caption{PR-AUC is threshold-free, so it measures the representation alone.}
+\end{figure}
+
+\vspace{0.1cm}
+Every model loses most of its ranking quality: PCA 0.50 $\to$ 0.11, Deep SVDD
+0.49 $\to$ 0.09, VAE 0.46 $\to$ 0.23. VAE retains the most; PCA and Deep SVDD retain
+almost nothing. This is the failure that a decision layer cannot repair.
+\end{myblock}
+
+}\end{minipage}\end{beamercolorbox}
+\end{column}
+
+% ============================== COLUMN 3 ==============================
+\begin{column}{.325\textwidth}
+\begin{beamercolorbox}[center]{postercolumn}
+\begin{minipage}{.98\textwidth}
+\parbox[t][\columnheight]{\textwidth}{
+
+\begin{myblock}{Result 3: high recall can be an alarm collapse}
+\begin{figure}
+\centering
+\includegraphics[width=0.98\linewidth]{fig/fig_collapse.png}
+\caption{Frozen arm. The calibration target was 10 alarms/day.}
+\end{figure}
+
+\vspace{0.1cm}
+PCA and Deep SVDD report \textbf{event recall 1.000} on 23.05 --- because they fire
+\textbf{8,297 alarms per day}, on 96\% of normal windows. A circular-shift null settles
+it: a randomly time-shifted version of the same alarm series matches this recall in
+every one of 200 shifts ($p = 1.00$). On 21.03 the same models beat their null at
+$p < 0.001$. VAE reports the honest number: recall 0.154 at 16.4 alarms/day, still
+7.7$\times$ its null. Raw recall is not a stand-alone measure of useful detection.
+\end{myblock}\vfill
+
+\begin{myblock}{Result 4: DSPOT does not recover it}
+\begin{center}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{model} & \textbf{frozen} & \textbf{adaptive} & \textbf{gain} & \textbf{FA/day} \\
+ & \multicolumn{2}{c}{\emph{23.05 event recall}} & & \emph{frozen$\to$adapt.} \\
+\midrule
+PCA & 1.000$^\dagger$ & 1.000$^\dagger$ & 0.000 & 8297$\to$8297 \\
+Deep SVDD & 1.000$^\dagger$ & 1.000$^\dagger$ & 0.000 & 8297$\to$8297 \\
+VAE & 0.154 & 0.115 & \textbf{$-$0.038} & 16.4$\to$5.5 \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.12cm}
+{\footnotesize $^\dagger$Recall 1.000 with 8,297 alarms/day is \emph{alarm collapse}:
+a circular-shift null reaches 1.000 in 200 of 200 shifts ($p=1.00$). It is not
+detection.}
+\end{center}
+
+\vspace{0.15cm}
+For VAE, DSPOT cuts alarms from 16.4 to 5.5 per day but \emph{loses} recall
+(recovery ratio $-0.095$). For the other two, nothing changes: they were already
+alarmed everywhere.
+
+\vspace{0.2cm}
+\textbf{Why:} PR-AUC is \emph{identical} between the frozen and adaptive arms ---
+4.873e-05 vs 9.481e-05 for the EVT risk parameter, same scores. DSPOT moves the
+decision threshold; it does not touch the encoder, the PCA basis, or the anomaly
+score. \textbf{Decision-layer adaptation cannot substitute for representation
+quality.}
+\end{myblock}\vfill
+
+\begin{myblock}{Conclusions}
+\begin{itemize}
+  \item \textbf{Zero-day detection does not survive the plant-version shift.} Ranking
+        quality falls by roughly a factor of four to five; two of three detectors
+        collapse into continuous alarm.
+  \item \textbf{The decision layer is not the bottleneck.} DSPOT reduces alarms where
+        the representation still works and does nothing where it does not.
+  \item \textbf{Report threshold-free metrics alongside event recall.} On the shifted
+        domain, recall 1.000 and recall 0.154 can describe equally useless detectors.
+  \item Limits: one testbed, two versions, three seeds; the source-normal calibration
+        targets an empirical source rate, not a guaranteed shifted-domain budget.
+\end{itemize}
+\end{myblock}
+
+}\end{minipage}\end{beamercolorbox}
+\end{column}
+
+\end{columns}
+\end{frame}
+\end{document}

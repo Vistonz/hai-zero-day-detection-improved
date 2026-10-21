@@ -15,14 +15,14 @@ PCA, DeepSVDD, and standard convolutional VAE; causal 60 s windows / 10 s evalua
 | Model | 23.05 event F | 23.05 event A | Gain | Recovery ROM | PR-AUC |
 | --- | --- | --- | --- | --- | --- |
 | PCA | 1.000 | 1.000 | 0.000 | n/a | 0.110 |
-| DeepSVDD | 1.000 | 1.000 | 0.000 | n/a | 0.091 |
+| DeepSVDD | 1.000 | 1.000 | 0.000 | n/a | 0.092 |
 | VAE | 0.154 | 0.115 | -0.038 | -0.095 | 0.232 |
 
 F = frozen SPOT; A = adaptive DSPOT; ROM = ratio of mean gain to mean loss. Values are three-seed means.
 
 ## Findings
 
-- VAE achieved the highest mean 23.05 PR-AUC (0.232 ± 0.002). Frozen and adaptive PR-AUC are identical because both arms threshold the same continuous scores.
+- VAE achieved the highest mean 23.05 PR-AUC (0.232 ± 0.000). Frozen and adaptive PR-AUC are identical because both arms threshold the same continuous scores.
 - For VAE, frozen event recall moved from 0.560 on 21.03 to 0.154 on 23.05; DSPOT changed cross-domain recall to 0.115 (gain -0.038; recovery ROM -0.095) and false alarms from 16.41 to 5.47 per day.
 - The highest raw frozen 23.05 event recall belonged to PCA and DeepSVDD (1.000 ± 0.000); the highest raw adaptive recall belonged to PCA and DeepSVDD (1.000 ± 0.000). Raw recall is not a stand-alone measure of useful detection.
 - PCA and DeepSVDD had the largest signed mean DSPOT event-detection gain (+0.000; ratio-of-means recovery undefined). A positive gain is recovery, whereas a negative gain is an additional loss.
