@@ -30,27 +30,20 @@
 
 \begin{myblock}{The problem}
 A zero-day detector must flag attacks it has never seen, trained on normal
-operation alone. The harder version of that question is what this poster is about:
-\emph{what happens when the plant itself is replaced by a later, differently
-instrumented version?} HAI 21.03 and 23.05 are two such versions of the same
-testbed, sharing 59 tags but not the same instrumentation.
+operation alone. The harder case is when the \emph{plant itself} is replaced by a
+later, differently instrumented version: HAI 21.03 and 23.05 are two such versions
+of the same testbed, sharing 59 tags but not the instrumentation.
 
-A detector that works in-domain may simply stop working when the baseline shifts,
-and no amount of threshold tuning can repair a representation that no longer
-separates attacks from normal operation.
-\end{myblock}\vfill
+\vspace{0.4cm}
+\large
+\textbf{How much does detection degrade from 21.03 to 23.05 --- and can an adaptive
+decision layer recover what is lost?}
 
-\begin{myblock}{What we asked}
-\begin{itemize}
-  \item \textbf{RQ1.} How much do event detection, eTaPR and point F1 degrade from
-        21.03 to 23.05 when the decision threshold is frozen at its source value?
-  \item \textbf{RQ2.} How much of that loss does a source-calibrated DSPOT recover,
-        and at what observed alarm rate?
-  \item \textbf{RQ3.} Do threshold-free ranking metrics support the same conclusion
-        as thresholded event metrics?
-  \item \textbf{RQ4.} Do the top-3 anomalous sensors include a documented attack
-        target?
-\end{itemize}
+\vspace{0.4cm}
+\normalsize
+A detector that works in-domain may stop working when the baseline shifts, and no
+amount of threshold tuning can repair a representation that no longer separates
+attacks from normal operation.
 \end{myblock}\vfill
 
 \begin{myblock}{Data}
