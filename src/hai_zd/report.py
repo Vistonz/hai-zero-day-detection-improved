@@ -2121,13 +2121,11 @@ def generate(root: Path, reports_dir: Path, figures_dir: Path) -> dict[str, Path
     report_md_path = reports_dir / "final_report.md"
     poster_md_path = reports_dir / "poster.md"
     report_pdf_path = reports_dir / "final_report.pdf"
-    poster_pdf_path = reports_dir / "poster.pdf"
-    poster_png_path = reports_dir / "poster.png"
     report_md_path.write_text(report_markdown.rstrip() + "\n", encoding="utf-8")
     poster_md_path.write_text(poster_markdown.rstrip() + "\n", encoding="utf-8")
     markdown_to_pdf(report_md_path, report_pdf_path)
-    render_poster_pdf(poster_pdf_path, inputs, recovery_summary, figures)
-    render_poster_png(poster_png_path, inputs, recovery_summary, figures)
+    # The poster is maintained as LaTeX in poster/, so the generated PDF and PNG are
+    # not produced. poster.md is kept as the plain-text summary of the same results.
 
     return {
         "metrics_summary": metrics_summary_path,
@@ -2137,8 +2135,6 @@ def generate(root: Path, reports_dir: Path, figures_dir: Path) -> dict[str, Path
         "final_report_md": report_md_path,
         "final_report_pdf": report_pdf_path,
         "poster_md": poster_md_path,
-        "poster_pdf": poster_pdf_path,
-        "poster_png": poster_png_path,
     }
 
 
